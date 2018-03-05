@@ -34,7 +34,7 @@ public class Box2DScreen extends BaseScreen {
 
     private Fixture player1Fixture, sueloFixture, pinchoFixture;
 
-    private boolean haColisionado;
+    private boolean debeSaltar, playerSaltando;
 
     @Override
     public void show() {
@@ -53,16 +53,29 @@ public class Box2DScreen extends BaseScreen {
                 Fixture fixtureA = contact.getFixtureA();
                 Fixture fixtureB = contact.getFixtureB();
                 if (fixtureA == player1Fixture && fixtureB == sueloFixture){
-                    haColisionado = true;
+                    if (Gdx.input.isTouched()){
+                        debeSaltar = true;
+                    }
+                    playerSaltando = false;
                 }
                 if (fixtureA == sueloFixture && fixtureB == player1Fixture){
-                    haColisionado = true;
+                    if (Gdx.input.isTouched()){
+                        debeSaltar = true;
+                    }
+                    playerSaltando = false;
                 }
             }
 
             @Override
             public void endContact(Contact contact) {
-
+                Fixture fixtureA = contact.getFixtureA();
+                Fixture fixtureB = contact.getFixtureB();
+                if (fixtureA == player1Fixture && fixtureB == sueloFixture){
+                    playerSaltando = true;
+                }
+                if (fixtureA == sueloFixture && fixtureB == player1Fixture){
+                    playerSaltando = true;
+                }
             }
 
             @Override
@@ -141,9 +154,12 @@ public class Box2DScreen extends BaseScreen {
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         //saltar al tocar pantalla
-        if (Gdx.input.justTouched() || haColisionado){
-            haColisionado = false;
+        if (debeSaltar){
+            debeSaltar = false;
             saltar();
+        }
+        if (Gdx.input.justTouched() && !playerSaltando){
+            debeSaltar = true;
         }
         //establecer mundo
         world.step(delta, 6,2);
