@@ -42,7 +42,7 @@ public class Box2DScreen extends BaseScreen {
 //crear bodies
         player1Body = world.createBody(createPlayerBodyDef());
         sueloBody = world.createBody(createSueloBodyDef());
-        pinchoBody = world.createBody(createPinchoBody(0.5f));
+        pinchoBody = world.createBody(createPinchoBody(1));
 
         PolygonShape player1Shape = new PolygonShape();
         player1Shape.setAsBox(0.5f,0.5f);
@@ -104,10 +104,20 @@ public class Box2DScreen extends BaseScreen {
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        //saltar al tocar pantalla
+        if (Gdx.input.justTouched()){
+            saltar();
+        }
 //establecer mundo
         world.step(delta, 6,2);
         //dibujar mundo
         camera.update();
         renderer.render(world,camera.combined);
+    }
+
+    //Crear metodo para salto
+    private void saltar(){
+        Vector2 position = player1Body.getPosition();
+        player1Body.applyLinearImpulse(0,20,position.x,position.y,true);
     }
 }
