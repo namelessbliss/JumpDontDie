@@ -34,7 +34,7 @@ public class Box2DScreen extends BaseScreen {
 
     private Fixture player1Fixture, sueloFixture, pinchoFixture;
 
-    private boolean debeSaltar, playerSaltando;
+    private boolean debeSaltar, playerSaltando, playerVivo = true;
 
     @Override
     public void show() {
@@ -43,7 +43,7 @@ public class Box2DScreen extends BaseScreen {
         renderer = new Box2DDebugRenderer();
         //crear camara
         //tamaño en metros
-        camera = new OrthographicCamera(7.11f ,4);
+        camera = new OrthographicCamera(19  ,9);
         camera.translate(0,1);
 
         //establecer contactor para colisiones
@@ -52,17 +52,17 @@ public class Box2DScreen extends BaseScreen {
             public void beginContact(Contact contact) {
                 Fixture fixtureA = contact.getFixtureA();
                 Fixture fixtureB = contact.getFixtureB();
-                if (fixtureA == player1Fixture && fixtureB == sueloFixture){
-                    if (Gdx.input.isTouched()){
-                        debeSaltar = true;
-                    }
-                    playerSaltando = false;
+                if ((fixtureA.getUserData().equals("player") && fixtureB.getUserData().equals("floor"))
+                        || (fixtureA.getUserData().equals("floor") && fixtureB.getUserData().equals("player"))){
+                        if (Gdx.input.isTouched()){
+                            debeSaltar = true;
+                        }
+                        playerSaltando = false;
                 }
-                if (fixtureA == sueloFixture && fixtureB == player1Fixture){
-                    if (Gdx.input.isTouched()){
-                        debeSaltar = true;
-                    }
-                    playerSaltando = false;
+
+                if ((fixtureA.getUserData().equals("player") && fixtureB.getUserData().equals("spike"))
+                        || (fixtureA.getUserData().equals("spike") && fixtureB.getUserData().equals("player"))){
+                    playerVivo = false;
                 }
             }
 
@@ -91,11 +91,11 @@ public class Box2DScreen extends BaseScreen {
         //crear bodies
         player1Body = world.createBody(createPlayerBodyDef());
         sueloBody = world.createBody(createSueloBodyDef());
-        pinchoBody = world.createBody(createPinchoBody(1));
+        pinchoBody = world.createBody(createPinchoBodyDef(6f));
 
         PolygonShape player1Shape = new PolygonShape();
         player1Shape.setAsBox(0.5f,0.5f);
-        player1Fixture = player1Body.createFixture(player1Shape,1);
+        player1Fixture = player1Body.createFixture(player1Shape,3);
         player1Shape.dispose();
 
         PolygonShape sueloShape = new PolygonShape();
@@ -104,9 +104,14 @@ public class Box2DScreen extends BaseScreen {
         sueloShape.dispose();
 
         pinchoFixture = createPincoFixture(pinchoBody);
+
+        //declarar fixtures a userdata
+        player1Fixture.setUserData("player");
+        sueloFixture.setUserData("floor");
+        pinchoFixture.setUserData("spike");
     }
 
-    private BodyDef createPinchoBody(float x) {
+    private BodyDef createPinchoBodyDef(float x) {
         BodyDef def = new BodyDef();
         def.position.set(x,0.5f);
         return def;
@@ -120,7 +125,7 @@ public class Box2DScreen extends BaseScreen {
 
     private BodyDef createPlayerBodyDef() {
         BodyDef def = new BodyDef();
-        def.position.set(0,10);
+        def.position.set(0,0.5f);
         def.type = BodyDef.BodyType.DynamicBody;
         return def;
     }
@@ -160,6 +165,10 @@ public class Box2DScreen extends BaseScreen {
         }
         if (Gdx.input.justTouched() && !playerSaltando){
             debeSaltar = true;
+        }
+        if (playerVivo) {
+            float velocidadY = player1Body.getLinearVelocity().y;
+            player1Body.setLinearVelocity(8, velocidadY);
         }
         //establecer mundo
         world.step(delta, 6,2);
