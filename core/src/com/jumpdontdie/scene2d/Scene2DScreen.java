@@ -1,19 +1,19 @@
-package com.jumpdontdie;
+package com.jumpdontdie.scene2d;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.jumpdontdie.actors.ActorJugador;
-import com.jumpdontdie.actors.ActorPinchos;
+import com.jumpdontdie.BaseScreen;
+import com.jumpdontdie.MyGdxGame;
 
 /**
  * Created by Administrador on 01/03/2018.
  */
 
-public class MainGameScreen extends BaseScreen {
-    public MainGameScreen(MyGdxGame game) {
+public class Scene2DScreen extends BaseScreen {
+    public Scene2DScreen(MyGdxGame game) {
         super(game);
         texturaJugador = new Texture("player1.png");
         texturaPinchos = new Texture("pinchos.png");

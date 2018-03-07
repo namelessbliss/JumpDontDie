@@ -1,4 +1,4 @@
-package com.jumpdontdie.actors;
+package com.jumpdontdie.scene2d;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

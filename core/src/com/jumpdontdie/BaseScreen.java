@@ -8,7 +8,7 @@ import com.badlogic.gdx.Screen;
 
 public abstract class BaseScreen implements Screen {
 
-    private MyGdxGame game;
+    protected MyGdxGame game;
 
     public BaseScreen(MyGdxGame game){
         this.game = game;
