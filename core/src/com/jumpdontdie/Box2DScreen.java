@@ -153,6 +153,7 @@ public class Box2DScreen extends BaseScreen {
         world.destroyBody(pinchoBody);
         world.dispose();
         renderer.dispose();
+        camera.translate(0,1);
     }
 
     @Override

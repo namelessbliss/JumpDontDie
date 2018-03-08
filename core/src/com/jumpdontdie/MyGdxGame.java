@@ -14,6 +14,8 @@ public class MyGdxGame extends Game {
     public GameScreen gameScreen;
     public GameOverScreen gameOverScreen;
     public MenuScreen menuScreen;
+    public LoadingScreen loadingScreen;
+    public CreditsScreen creditsScreen;
 
     public AssetManager getManager() {
         return manager;
@@ -29,14 +31,21 @@ public class MyGdxGame extends Game {
         manager.load("spike.png", Texture.class);
         manager.load("player.png", Texture.class);
         manager.load("gameover.png", Texture.class);
+        manager.load("logo.png", Texture.class);
         manager.load("die.ogg", Sound.class);
         manager.load("jump.ogg", Sound.class);
         manager.load("song.ogg", Music.class);
-        manager.finishLoading();
 
+
+        loadingScreen = new LoadingScreen(this);
+        setScreen(loadingScreen);
+    }
+
+    public void finishLoading(){
+        menuScreen = new MenuScreen(this);
         gameScreen = new GameScreen(this);
         gameOverScreen = new GameOverScreen(this);
-
-        setScreen(gameOverScreen);
+        creditsScreen = new CreditsScreen(this);
+        setScreen(menuScreen);
     }
 }

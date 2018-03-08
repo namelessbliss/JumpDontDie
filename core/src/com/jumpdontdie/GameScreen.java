@@ -148,6 +148,7 @@ public class GameScreen extends BaseScreen {
         }
         floorList.clear();
         spikeList.clear();
+
     }
 
     @Override
