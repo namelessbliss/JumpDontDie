@@ -6,6 +6,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -41,6 +42,8 @@ public class GameScreen extends BaseScreen {
 
     private Music bgMusic;
 
+    private Vector3 position;
+
     public GameScreen(final MyGdxGame game) {
         super(game);
         //declarar sonidos y musica
@@ -49,8 +52,9 @@ public class GameScreen extends BaseScreen {
         bgMusic = game.getManager().get("song.ogg");
 
         stage =  new Stage(new FitViewport(640,360));
-        world = new World(new Vector2(0,-10),true);
+        position = new Vector3(stage.getCamera().position);
 
+        world = new World(new Vector2(0,-10),true);
         world.setContactListener(new ContactListener() {
             private boolean areCollided(Contact contact, Object userA, Object userB){
                 return (contact.getFixtureA().getUserData().equals(userA) && contact.getFixtureB().getUserData().equals(userB)) ||
@@ -114,21 +118,26 @@ public class GameScreen extends BaseScreen {
         player = new PlayerEntity(world, playerTexture, new Vector2(1.5f,1.5f));
         //establecer suelo
         floorList.add(new FloorEntity(world, floorTexture, overfloorTexture, 0, 1000, 1));
-        floorList.add(new FloorEntity(world, floorTexture, overfloorTexture, 12, 10, 2));
-        floorList.add(new FloorEntity(world, floorTexture, overfloorTexture, 30, 10, 2));
+        floorList.add(new FloorEntity(world, floorTexture, overfloorTexture, 15, 10, 2));
+        floorList.add(new FloorEntity(world, floorTexture, overfloorTexture, 30, 8, 2));
         //establecer pincho
-        spikeList.add(new SpikeEntity(world, spikeTexture, 6,1));
-        spikeList.add(new SpikeEntity(world, spikeTexture, 18,2));
+        spikeList.add(new SpikeEntity(world, spikeTexture, 8,1));
+        spikeList.add(new SpikeEntity(world, spikeTexture, 23,2));
         spikeList.add(new SpikeEntity(world, spikeTexture, 35,2));
         spikeList.add(new SpikeEntity(world, spikeTexture, 50,1));
 
-        stage.addActor(player);
         for (FloorEntity floor : floorList){
             stage.addActor(floor);
         }
         for (SpikeEntity spike : spikeList){
             stage.addActor(spike);
         }
+        stage.addActor(player);
+
+        //resetear el objetivo de la camara
+        stage.getCamera().position.set(position);
+        stage.getCamera().update();
+
         bgMusic.setVolume(0.75f);
         bgMusic.play();
     }
